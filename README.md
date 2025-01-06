@@ -48,4 +48,4 @@ export default tseslint.config({
   },
 })
 ```
-# dice-bot-tma
+# dice-city-stories-tma
