@@ -34,3 +34,13 @@ button {
 button:hover {
     background: #006699;
 }
+
+p {
+    font-size: 20px;
+}
+
+.connect-btn {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
