@@ -88,7 +88,7 @@ function App() {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
+        const id = urlParams.get('userId');
 
         if (!id) {
             setIsButtonDisabled(true);
@@ -150,7 +150,7 @@ function App() {
         <div className="container">
             {!userId ? (
                 <p style={{color: 'red'}}>
-                    Error: User ID is missing in the URL.
+                    Seems like you opened me not from Dice Bot
                 </p>
             ) : (
                 <>
