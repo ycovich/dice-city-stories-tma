@@ -109,8 +109,10 @@ function App() {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            userId,
-                            walletAddress: userFriendlyAddress,
+                            tmaUserInfo: {
+                                userId,
+                                walletAddress: userFriendlyAddress,
+                            },
                         }),
                     });
 
