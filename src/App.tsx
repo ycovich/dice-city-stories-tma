@@ -1,75 +1,3 @@
-// import {
-//     TonConnectButton,
-//     useTonConnectUI,
-//     useTonAddress
-// } from '@tonconnect/ui-react';
-// import {useState} from 'react';
-// import {RECEIVER_ADDRESS, DEFAULT_AMOUNT} from './utils/constants';
-//
-// function App() {
-//     const [tonConnectUI] = useTonConnectUI();
-//     const [amount, setAmount] = useState(DEFAULT_AMOUNT);
-//
-//     // get wallet address
-//     const userFriendlyAddress = useTonAddress();
-//
-//     const handleSend = async () => {
-//         try {
-//             const transaction = {
-//                 validUntil: Math.floor(Date.now() / 1000) + 60, // 60 seconds from now
-//                 messages: [
-//                     {
-//                         address: RECEIVER_ADDRESS, // Address should be string
-//                         amount: (parseFloat(amount) * 1e9).toString(), // Amount should be string
-//                     },
-//                 ],
-//             };
-//
-//             await tonConnectUI.sendTransaction(transaction);
-//             setAmount(DEFAULT_AMOUNT);
-//         } catch (e) {
-//             console.error(e);
-//         }
-//     };
-//
-//     return (
-//         <div className="container">
-//             <div className='connect-btn'>
-//                 <TonConnectButton/>
-//             </div>
-//
-//
-//             <span>{userFriendlyAddress}</span>
-//
-//             {userFriendlyAddress ? (
-//                 <div className="payment-form">
-//                     <input
-//                         type="number"
-//                         value={amount}
-//                         onChange={(e) => setAmount(e.target.value)}
-//                         placeholder="Amount in TON"
-//                         step="0.1"
-//                         min="0.1"
-//                     />
-//
-//
-//                     <button onClick={handleSend}>
-//                         Send {amount} TON
-//                     </button>
-//                 </div>
-//             ) : (
-//                 <p>Please connect your wallet to send transactions.</p>
-//             )}
-//         </div>
-//     );
-// }
-//
-// export default App;
-
-
-//
-
-
 import {
     TonConnectButton,
     useTonConnectUI,
@@ -92,7 +20,7 @@ function App() {
 
         if (!id) {
             setIsButtonDisabled(true);
-            console.error('User ID is missing in the URL');
+            console.error('похоже, вы открыли это приложение не через телеграм бота');
         } else {
             setUserId(isNaN(Number(id)) ? 0 : Number(id));
             setIsButtonDisabled(false);
@@ -131,6 +59,27 @@ function App() {
 
     const handleSend = async () => {
         try {
+            const preTransactionResponse = await fetch(
+                'https://d5daiqde8n7sohi9jsek.z7jmlavt.apigw.yandexcloud.net/dice-bot',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        txInfo: {
+                            userId,
+                            amount,
+                        },
+                    }),
+                }
+            );
+
+            if (!preTransactionResponse.ok) {
+                throw new Error('Failed to send pre-transaction data');
+            }
+            console.log('Pre-transaction data sent successfully');
+
             const transaction = {
                 validUntil: Math.floor(Date.now() / 1000) + 60,
                 messages: [
@@ -142,9 +91,10 @@ function App() {
             };
 
             await tonConnectUI.sendTransaction(transaction);
+
             setAmount(DEFAULT_AMOUNT);
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error('Error during transaction:', error);
         }
     };
 
